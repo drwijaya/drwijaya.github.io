@@ -1,8 +1,15 @@
 services:
   website:
     image: nginx:alpine
+    container_name: portfolio-test
     ports:
       - "8080:80"
     restart: unless-stopped
-    volumes:
-      - ./:/usr/share/nginx/html:ro
+    command: >
+      sh -c "
+      apk add --no-cache git &&
+      rm -rf /usr/share/nginx/html/* &&
+      git clone https://github.com/drwijaya/drwijaya.github.io.git /tmp/site &&
+      cp -r /tmp/site/* /usr/share/nginx/html/ &&
+      nginx -g 'daemon off;'
+      "
